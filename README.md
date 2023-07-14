@@ -20,6 +20,25 @@ Then execute the transpiled script
 node ./BS_myJavascriptScript.js
 ```
 
+Node does not recognize fs or the requires keyword in the obfuscated script. If you need to pass parameters into the script then
+It's unlikely that I add options to include such things automatically. PRs welcome though.
+
+1. Write the script as though the parameters exist already and transpile it.
+2. Then open the transpiled scriptfile with a text editor. Insert your code above and below the BS script.
+3. The BS script will always start with `(()=>{})[`. Find the matching bracket to the `[` and insert after that your parameters as strings.
+4. Pass your parameters at the very end into the function call.
+
+For example
+
+```text
+let myVar = 42;
+(()=>{})[ ... ]('myVarIdentifierAsUsedInTheBSScript', ... )(myVar)
+```
+
+You can also obfuscate that first string, too, by creating a file with just the variable identifier and then pasting that in after mangling it. Just remove the quote marks.
+
+
+
 This was shamelessly 'inspired' from here, but rewritten in c++:
 
 https://github.com/lowbyteproductions/JavaScript-Is-Weird
