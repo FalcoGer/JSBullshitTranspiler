@@ -43,6 +43,6 @@ This was shamelessly 'inspired' from here, but rewritten in c++:
 
 https://github.com/lowbyteproductions/JavaScript-Is-Weird
 
-which has this accomanying video
+which has this accompanying video
 
 https://www.youtube.com/watch?v=sRWE5tnaxlI
