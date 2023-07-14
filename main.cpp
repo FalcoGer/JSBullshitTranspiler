@@ -6,25 +6,31 @@
 
 #include "transpiler.hpp"
 
-auto main() -> int
+auto main(int argc, char** argv) -> int
 {
     using std::cin;
     using std::cout;
     using std::ifstream;
     using std::string;
 
-    string fileName;
-
-    cout << "Enter filename to transpile: ";
-    std::getline(cin, fileName, '\n');
-
+    if (argc != 2)
+    {
+        cout << "Please provide the file you want to transpile as the only argument.\n";
+        return -1;
+    }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic): No choice here.
+    string fileName(argv[1]);
     string targetFilename = "bs_" + fileName;
-
-    string   code;
+    string code;
 
     {
         ifstream ifs(fileName);
-        string   line;
+        if (ifs.fail())
+        {
+            cout << "Failed to open \"" << fileName << "\" for reading.\n";
+            return -1;
+        }
+        string line;
 
         while (!ifs.eof())
         {
@@ -32,14 +38,20 @@ auto main() -> int
             code += line + '\n';
         }
     }
-
-    Transpiler tplr(std::move(code));
-    code = tplr.Transpile();
-
-    cout << "======== START ========\n" << code << "\n ======== END ========\n";
+    {
+        Transpiler transpiler(std::move(code));
+        code = transpiler.Transpile();
+    }
+    // cout << "======== START ========\n" << code << "\n ======== END ========\n";
 
     {
-        std::ofstream ofs("BS_" + fileName, std::ios_base::out & std::ios_base::trunc);
+        std::string   outFileName = "BS_" + fileName;
+        std::ofstream ofs(outFileName, std::ios_base::out & std::ios_base::trunc);
+        if (ofs.fail())
+        {
+            cout << "Failed to open \"" << outFileName << "\" for writing.\n";
+            return -1;
+        }
         ofs << code;
     }
 
